@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrador AES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cifrador AES</h2>
+        <textarea id="mensaje" rows="4" placeholder="Ingresa el mensaje"></textarea>
+        <input type="password" id="clave" placeholder="Ingresa la clave">
+        <button onclick="cifrar()">Cifrar</button>
+        <button onclick="descifrar()">Descifrar</button>
+        <textarea id="resultado" rows="4" readonly placeholder="Resultado"></textarea>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script>
+        // Función para cifrar
+        function cifrar() {
+            const mensaje = document.getElementById('mensaje').value;
+            const clave = document.getElementById('clave').value;
+
+            if (mensaje === '' || clave === '') {
+                alert('Por favor, ingresa el mensaje y la clave.');
+                return;
+            }
+
+            // Cifrar con AES usando la clave proporcionada
+            const cifrado = CryptoJS.AES.encrypt(mensaje, clave).toString();
+
+            // Mostrar el resultado cifrado en el área de texto
+            document.getElementById('resultado').value = cifrado;
+        }
+
+        // Función para descifrar
+        function descifrar() {
+            const cifrado = document.getElementById('resultado').value;
+            const clave = document.getElementById('clave').value;
+
+            if (cifrado === '' || clave === '') {
+                alert('Por favor, ingresa el mensaje cifrado y la clave.');
+                return;
+            }
+
+            try {
+                // Descifrar usando la clave proporcionada
+                const bytes = CryptoJS.AES.decrypt(cifrado, clave);
+                const descifrado = bytes.toString(CryptoJS.enc.Utf8);
+
+                if (!descifrado) {
+                    throw new Error('Clave incorrecta o mensaje alterado');
+                }
+
+                // Mostrar el resultado descifrado en el área de texto
+                document.getElementById('resultado').value = descifrado;
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
